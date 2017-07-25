@@ -106,7 +106,7 @@ class Input(Widget):
             context['datalist'] = self.datalist
         return context
 
-    def render(self, name, value, attrs=None, **kwargs):
+    def render(self, name, value, attrs=None, renderer=None, **kwargs):
         template_name = kwargs.pop('template_name', None)
         if template_name is None:
             template_name = self.template_name
@@ -133,7 +133,7 @@ class PasswordInput(TextInput):
         super(PasswordInput, self).__init__(attrs)
         self.render_value = render_value
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None, **kwargs):
         if not self.render_value:
             value = None
         return super(PasswordInput, self).render(name, value, attrs)
@@ -150,7 +150,7 @@ class MultipleHiddenInput(HiddenInput):
         super(MultipleHiddenInput, self).__init__(attrs)
         self.choices = choices
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, renderer=None, choices=()):
         if value is None:
             value = []
 
@@ -176,7 +176,7 @@ class SlugInput(TextInput):
     template_name = 'floppyforms/slug.html'
 
     """<input type="text"> validating slugs with a pattern"""
-    def get_context(self, name, value, attrs):
+    def get_context(self, name, value, attrs=None):
         context = super(SlugInput, self).get_context(name, value, attrs)
         context['attrs']['pattern'] = "[-\w]+"
         return context
@@ -189,7 +189,7 @@ class IPAddressInput(TextInput):
     ip_pattern = ("(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25"
                   "[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}")
 
-    def get_context(self, name, value, attrs):
+    def get_context(self, name, value, attrs=None):
         context = super(IPAddressInput, self).get_context(name, value, attrs)
         context['attrs']['pattern'] = self.ip_pattern
         return context
@@ -201,7 +201,7 @@ class FileInput(Input):
     needs_multipart_form = True
     omit_value = True
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None, **kwargs):
         if self.omit_value:
             # File inputs can't render an existing value if it's not saved
             value = None
@@ -231,7 +231,7 @@ class ClearableFileInput(FileInput):
     def clear_checkbox_id(self, name):
         return name + '_id'
 
-    def get_context(self, name, value, attrs):
+    def get_context(self, name, value, attrs=None):
         context = super(ClearableFileInput, self).get_context(name, value,
                                                               attrs)
         ccb_name = self.clear_checkbox_name(name)
@@ -435,7 +435,7 @@ class CheckboxInput(Input, forms.CheckboxInput):
         super(CheckboxInput, self).__init__(attrs)
         self.check_test = boolean_check if check_test is None else check_test
 
-    def get_context(self, name, value, attrs):
+    def get_context(self, name, value, attrs=None):
         result = self.check_test(value)
         context = super(CheckboxInput, self).get_context(name, value, attrs)
         if result:
