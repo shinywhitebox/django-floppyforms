@@ -452,7 +452,7 @@ class BaseFormRenderNode(BaseFormNode):
                 template_name = self.get_template_name(context)
             return get_template(context, template_name)
         except:
-            if settings.TEMPLATE_DEBUG:
+            if settings.DEBUG:
                 raise
 
     def get_extra_context(self, context):
