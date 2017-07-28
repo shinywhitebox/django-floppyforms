@@ -92,7 +92,7 @@ class Input(Widget):
             context['value'] = self._format_value(value)
 
         context.update(self.get_context_data())
-        context['attrs'] = self.build_attrs(attrs)
+        context['attrs'] = self.build_attrs(self.attrs, attrs)
 
         for key, attr in context['attrs'].items():
             if attr == 1:
@@ -154,7 +154,7 @@ class MultipleHiddenInput(HiddenInput):
         if value is None:
             value = []
 
-        final_attrs = self.build_attrs(attrs)
+        final_attrs = self.build_attrs(self.attrs, attrs)
         id_ = final_attrs.get('id', None)
         inputs = []
         for i, v in enumerate(value):
